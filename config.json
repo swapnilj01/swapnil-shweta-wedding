@@ -1,0 +1,64 @@
+{
+  "_comment": "Groom-side configuration. This file and the photos folder named in gallery.photosDir are the ONLY data that differs between the bride and groom repos — styles.css, script.js and everything below index.html's <head> are identical. Every value here has a matching fallback hardcoded in index.html, so the page still reads correctly if this file fails to load.",
+  "side": "groom",
+  "couple": {
+    "top": {
+      "name": "Swapnil",
+      "relation": "Son of",
+      "parents": "Dr. Shyamakant Jena & Mrs. Sunanda Jena"
+    },
+    "bottom": {
+      "name": "Shweta",
+      "relation": "Daughter of",
+      "parents": "Mr. AVN Sridhar Kumar & Mrs. C Jyoti"
+    }
+  },
+  "hero": {
+    "kicker": "You are invited to celebrate",
+    "tagline": "Be a part of two souls witnessing the start of their forever journey.",
+    "heroDate": "22–25 December 2026",
+    "title": "Swapnil & Shweta"
+  },
+  "invitation": {
+    "heading": "Our forever begins here",
+    "text": "With love, laughter, and blessings, we invite you to witness the wedding celebration of Swapnil and Shweta as they begin their forever journey."
+  },
+  "countdownTarget": "2026-12-22T10:00:00+05:30",
+  "schedule": [
+    { "date": "22 Dec", "time": "10:00 AM", "iso": "2026-12-22T10:00:00+05:30", "title": "Mangan Handi & Haldi", "venueName": "Groom's Residence", "mapsUrl": "" },
+    { "date": "23 Dec", "time": "6:00 PM",  "iso": "2026-12-23T18:00:00+05:30", "title": "Baraati",              "venueName": "Odissi Hotel, Infocity → Greenland Resort", "mapsUrl": "" },
+    { "date": "23 Dec", "time": "11:00 PM", "iso": "2026-12-23T23:00:00+05:30", "title": "Wedding",              "venueName": "Greenland Resort", "mapsUrl": "https://maps.app.goo.gl/hMzEbQEMX5zCqHz48" },
+    { "date": "24 Dec", "time": "4:10 AM",  "iso": "2026-12-24T04:10:00+05:30", "title": "Hastagranthi",         "venueName": "Greenland Resort", "mapsUrl": "https://maps.app.goo.gl/hMzEbQEMX5zCqHz48" },
+    { "date": "24 Dec", "time": "2:00 PM",  "iso": "2026-12-24T14:00:00+05:30", "title": "Bride Welcome",        "venueName": "Groom's Residence", "mapsUrl": "" },
+    { "date": "25 Dec", "time": "7:00 PM",  "iso": "2026-12-25T19:00:00+05:30", "title": "Reception",            "venueName": "S3 Lawns", "mapsUrl": "https://maps.app.goo.gl/8SaZx1GwJRDbqbKa7" }
+  ],
+  "venues": [
+    { "name": "Groom's Residence", "address": "", "mapsUrl": "", "note": "Mangan Handi & Haldi, 22 Dec · Bride Welcome, 24 Dec" },
+    { "name": "Greenland Resort", "address": "Patia, Bhubaneshwar", "mapsUrl": "https://maps.app.goo.gl/hMzEbQEMX5zCqHz48", "note": "Wedding, 23 Dec 11 PM · Hastagranthi, 24 Dec 4:10 AM" },
+    { "name": "S3 Lawns", "address": "Patia, Bhubaneshwar", "mapsUrl": "https://maps.app.goo.gl/8SaZx1GwJRDbqbKa7", "note": "Reception, 25 Dec 7 PM" }
+  ],
+  "bestCompliments": {
+    "heading": "Best Compliments From",
+    "names": ["Name 1", "Name 2", "Name 3"]
+  },
+  "rsvp": {
+    "contactName": "Dr Shyamakant Jena",
+    "contactRelation": "Groom's Father",
+    "phone": "+919861180080",
+    "heading": "Celebrate with us",
+    "message": "We would be delighted to have you with us for this beautiful beginning.",
+    "buttonLabel": "Send RSVP",
+    "callLabel": "Call instead",
+    "smsBody": "Hi, RSVP for Swapnil & Shweta’s wedding — "
+  },
+  "gallery": {
+    "photosDir": "photos",
+    "photosJson": "photos/photos.json",
+    "heading": "If you missed the events so far, here are some snaps to glance over"
+  },
+  "assets": {
+    "couplePhotoJpg": "assets/couple.jpg",
+    "couplePhotoWebp": "assets/couple.webp",
+    "music": "assets/romantic-instrumental.m4a"
+  }
+}

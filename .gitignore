@@ -1,0 +1,26 @@
+# ---------------------------------------------------------------------------
+# Full-resolution originals stay on your Mac; they do NOT belong in git.
+#
+# These are ~15 MB each straight off the camera (7008x4672). Committing them
+# would push the repo past 150 MB, and git keeps every version forever, so it
+# could never be shrunk back down afterwards.
+#
+# The site does not need them. It serves photos/optimized/, which is ~4 MB and
+# IS committed. Keep the originals safe in your own backup / Google Photos —
+# you only need them locally to re-run `npm run photos`.
+# ---------------------------------------------------------------------------
+photos/originals/*
+!photos/originals/.gitkeep
+
+# Backups the photo build script writes. Safe to lose once you've pushed.
+photos/photos.json.bak
+photos/photos.json.broken-*
+
+# Local editor / tooling config
+.claude/
+
+# macOS
+.DS_Store
+._*
+
+node_modules/
