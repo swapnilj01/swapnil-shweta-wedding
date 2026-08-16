@@ -28,14 +28,14 @@
     { "date": "22 Dec", "time": "10:00 AM", "iso": "2026-12-22T10:00:00+05:30", "title": "Mangan Handi & Haldi", "venueName": "Groom's Residence", "mapsUrl": "" },
     { "date": "23 Dec", "time": "6:00 PM",  "iso": "2026-12-23T18:00:00+05:30", "title": "Baraati",              "venueName": "Odissi Hotel, Infocity → Greenland Resort", "mapsUrl": "" },
     { "date": "23 Dec", "time": "11:00 PM", "iso": "2026-12-23T23:00:00+05:30", "title": "Wedding",              "venueName": "Greenland Resort", "mapsUrl": "https://maps.app.goo.gl/hMzEbQEMX5zCqHz48" },
-    { "date": "24 Dec", "time": "4:10 AM",  "iso": "2026-12-24T04:10:00+05:30", "title": "Hastagranthi",         "venueName": "Greenland Resort", "mapsUrl": "https://maps.app.goo.gl/hMzEbQEMX5zCqHz48" },
+    { "date": "24 Dec", "time": "4:00 AM",  "iso": "2026-12-24T04:10:00+05:30", "title": "Hastagranthi",         "venueName": "Greenland Resort", "mapsUrl": "https://maps.app.goo.gl/hMzEbQEMX5zCqHz48" },
     { "date": "24 Dec", "time": "2:00 PM",  "iso": "2026-12-24T14:00:00+05:30", "title": "Bride Welcome",        "venueName": "Groom's Residence", "mapsUrl": "" },
     { "date": "25 Dec", "time": "7:00 PM",  "iso": "2026-12-25T19:00:00+05:30", "title": "Reception",            "venueName": "S3 Lawns", "mapsUrl": "https://maps.app.goo.gl/8SaZx1GwJRDbqbKa7" }
   ],
   "venues": [
     { "name": "Groom's Residence", "address": "", "mapsUrl": "", "note": "Mangan Handi & Haldi, 22 Dec · Bride Welcome, 24 Dec" },
     { "name": "Greenland Resort", "address": "Patia, Bhubaneshwar", "mapsUrl": "https://maps.app.goo.gl/hMzEbQEMX5zCqHz48", "note": "Wedding, 23 Dec 11 PM · Hastagranthi, 24 Dec 4:10 AM" },
-    { "name": "S3 Lawns", "address": "Patia, Bhubaneshwar", "mapsUrl": "https://maps.app.goo.gl/8SaZx1GwJRDbqbKa7", "note": "Reception, 25 Dec 7 PM" }
+    { "name": "S3 Lawns", "address": "Ambapua Main Road, Berhampur", "mapsUrl": "https://maps.app.goo.gl/8SaZx1GwJRDbqbKa7", "note": "Reception, 25 Dec 7 PM" }
   ],
   "bestCompliments": {
     "heading": "Best Compliments From",
@@ -49,7 +49,7 @@
     "message": "We would be delighted to have you with us for this beautiful beginning.",
     "buttonLabel": "Send RSVP",
     "callLabel": "Call instead",
-    "smsBody": "Hi, RSVP for Swapnil & Shweta’s wedding — "
+    "smsBody": "Hi, I am RSVPing for Swapnil & Shweta’s wedding — :)"
   },
   "gallery": {
     "photosDir": "photos",
