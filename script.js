@@ -759,48 +759,69 @@
     const pill = $('musicPill');
     if (!music) return;
 
+    const VOLUME = 0.34;
     let userPaused = false;
-    let attemptedUnlock = false;
+    let pending = false;
+
+    /** Audible means: running, not muted, and turned up. */
+    const audible = () => !music.paused && !music.muted && music.volume > 0;
 
     const sync = () => {
       if (!pill) return;
-      pill.classList.toggle('paused', music.paused);
+      pill.classList.toggle('paused', !audible());
       const label = pill.querySelector('b');
-      if (label) label.textContent = music.paused ? 'Music' : 'Music on';
-      pill.setAttribute('aria-pressed', String(!music.paused));
+      if (label) label.textContent = audible() ? 'Music on' : 'Music';
+      pill.setAttribute('aria-pressed', String(audible()));
     };
 
-    async function start(force = false) {
-      if (userPaused) return;
+    /**
+     * Try to get audible playback. If the browser refuses, fall back to a
+     * silent start: that is always permitted, keeps the track buffered and
+     * running, and means the first real tap only has to unmute rather than
+     * start from cold on a slow connection.
+     */
+    async function tryPlay() {
+      if (userPaused || pending || audible()) return audible();
+      pending = true;
       try {
-        music.volume = 0.34;
+        music.volume = VOLUME;
         music.muted = false;
         await music.play();
-        attemptedUnlock = true;
+        return true;
       } catch {
-        // Fall back to starting muted, then unmuting — some browsers allow this.
-        if (force && !attemptedUnlock) {
-          try {
-            music.muted = true;
-            await music.play();
-            setTimeout(() => { music.muted = false; music.volume = 0.34; sync(); }, 350);
-          } catch { /* autoplay genuinely blocked; the pill still works */ }
-        }
+        try { music.muted = true; await music.play(); } catch { /* still blocked */ }
+        return false;
       } finally {
+        pending = false;
         sync();
       }
     }
 
-    start(true);
-    window.addEventListener('load', () => start(true), { once: true });
-    ['pointerdown', 'touchstart', 'wheel', 'scroll', 'keydown'].forEach(type => {
-      window.addEventListener(type, () => start(false), { passive: true, once: true });
-    });
-    document.addEventListener('visibilitychange', () => { if (!document.hidden) start(false); });
+    /**
+     * Only these grant user activation, which is what actually unblocks audio.
+     * scroll and wheel do NOT — they were previously in this list with
+     * `once: true`, so the page's first scroll silently burned the retry and
+     * the music never started. They stay as extra attempts, nothing more.
+     */
+    const ACTIVATING = ['pointerdown', 'touchend', 'click', 'keydown'];
+    const EXTRA = ['scroll', 'wheel', 'touchmove'];
+
+    const attempt = async () => { if (await tryPlay()) detach(); };
+    function detach() {
+      ACTIVATING.forEach(t => window.removeEventListener(t, attempt, true));
+      EXTRA.forEach(t => window.removeEventListener(t, attempt));
+    }
+    // Capture phase, so a tap on a link or button still reaches us first.
+    ACTIVATING.forEach(t => window.addEventListener(t, attempt, true));
+    EXTRA.forEach(t => window.addEventListener(t, attempt, { passive: true }));
+
+    tryPlay();
+    window.addEventListener('load', tryPlay, { once: true });
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) tryPlay(); });
 
     pill?.addEventListener('click', async () => {
-      if (music.paused) { userPaused = false; await start(false); }
-      else { userPaused = true; music.pause(); sync(); }
+      if (audible()) { userPaused = true; music.pause(); sync(); }
+      else { userPaused = false; music.muted = false; await tryPlay(); }
     });
     sync();
   }

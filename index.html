@@ -39,8 +39,11 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <!-- AAC instead of the original 22 MB WAV: same music, ~1.5 MB, kinder to mobile data. -->
-  <audio id="bgMusic" src="assets/romantic-instrumental.m4a" autoplay loop playsinline preload="auto"></audio>
+  <!-- Starts MUTED on purpose: muted autoplay is always permitted, so the track
+       is already buffered and running and the first tap only has to unmute it.
+       64 kbps AAC (2.5 MB for 5:26) and preload="metadata" so a weak connection
+       isn't blocked downloading audio before the page is usable. -->
+  <audio id="bgMusic" src="assets/music.m4a" autoplay loop muted playsinline preload="metadata"></audio>
 
   <div class="grain" aria-hidden="true"></div>
   <div class="sky-glow" aria-hidden="true"></div>

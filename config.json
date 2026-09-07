@@ -25,21 +25,80 @@
   },
   "countdownTarget": "2026-12-22T10:00:00+05:30",
   "schedule": [
-    { "date": "22 Dec", "time": "10:00 AM", "iso": "2026-12-22T10:00:00+05:30", "title": "Mangan Handi & Haldi", "venueName": "Groom's Residence", "mapsUrl": "" },
-    { "date": "23 Dec", "time": "6:00 PM",  "iso": "2026-12-23T18:00:00+05:30", "title": "Baraati",              "venueName": "Odissi Hotel, Infocity → Greenland Resort", "mapsUrl": "" },
-    { "date": "23 Dec", "time": "11:00 PM", "iso": "2026-12-23T23:00:00+05:30", "title": "Wedding",              "venueName": "Greenland Resort", "mapsUrl": "https://maps.app.goo.gl/hMzEbQEMX5zCqHz48" },
-    { "date": "24 Dec", "time": "4:26 AM",  "iso": "2026-12-24T04:10:00+05:30", "title": "Hastagranthi",         "venueName": "Greenland Resort", "mapsUrl": "https://maps.app.goo.gl/hMzEbQEMX5zCqHz48" },
-    { "date": "24 Dec", "time": "2:00 PM",  "iso": "2026-12-24T14:00:00+05:30", "title": "Bride Welcome",        "venueName": "Groom's Residence", "mapsUrl": "" },
-    { "date": "25 Dec", "time": "7:00 PM",  "iso": "2026-12-25T19:00:00+05:30", "title": "Reception",            "venueName": "S3 Lawns", "mapsUrl": "https://maps.app.goo.gl/8SaZx1GwJRDbqbKa7" }
+    {
+      "date": "22 Dec",
+      "time": "10:00 AM",
+      "iso": "2026-12-22T10:00:00+05:30",
+      "title": "Mangan Handi & Haldi",
+      "venueName": "Groom's Residence",
+      "mapsUrl": ""
+    },
+    {
+      "date": "23 Dec",
+      "time": "6:00 PM",
+      "iso": "2026-12-23T18:00:00+05:30",
+      "title": "Baraati",
+      "venueName": "Odissi Hotel, Infocity → Greenland Resort",
+      "mapsUrl": ""
+    },
+    {
+      "date": "23 Dec",
+      "time": "11:00 PM",
+      "iso": "2026-12-23T23:00:00+05:30",
+      "title": "Wedding",
+      "venueName": "Greenland Resort",
+      "mapsUrl": "https://maps.app.goo.gl/hMzEbQEMX5zCqHz48"
+    },
+    {
+      "date": "24 Dec",
+      "time": "4:26 AM",
+      "iso": "2026-12-24T04:10:00+05:30",
+      "title": "Hastagranthi",
+      "venueName": "Greenland Resort",
+      "mapsUrl": "https://maps.app.goo.gl/hMzEbQEMX5zCqHz48"
+    },
+    {
+      "date": "24 Dec",
+      "time": "2:00 PM",
+      "iso": "2026-12-24T14:00:00+05:30",
+      "title": "Bride Welcome",
+      "venueName": "Groom's Residence",
+      "mapsUrl": ""
+    },
+    {
+      "date": "25 Dec",
+      "time": "7:00 PM",
+      "iso": "2026-12-25T19:00:00+05:30",
+      "title": "Reception",
+      "venueName": "S3 Lawns",
+      "mapsUrl": "https://maps.app.goo.gl/8SaZx1GwJRDbqbKa7"
+    }
   ],
   "venues": [
-    { "name": "Groom's Residence", "address": "Aurobinda Nagar, Berhampur", "mapsUrl": "https://maps.app.goo.gl/BAFQqZSwxS46C1HCA", "note": "Mangan Handi & Haldi, 22 Dec · Bride Welcome, 24 Dec" },
-    { "name": "Greenland Resort", "address": "Patia, Bhubaneshwar", "mapsUrl": "https://maps.app.goo.gl/hMzEbQEMX5zCqHz48", "note": "Wedding, 23 Dec 11 PM · Hastagranthi, 24 Dec 4:10 AM" },
-    { "name": "S3 Lawns", "address": "Ambapua Main Road, Berhampur", "mapsUrl": "https://maps.app.goo.gl/8SaZx1GwJRDbqbKa7", "note": "Reception, 25 Dec 7 PM" }
+    {
+      "name": "Groom's Residence",
+      "address": "Aurobinda Nagar, Berhampur",
+      "mapsUrl": "https://maps.app.goo.gl/BAFQqZSwxS46C1HCA",
+      "note": "Mangan Handi & Haldi, 22 Dec · Bride Welcome, 24 Dec"
+    },
+    {
+      "name": "Greenland Resort",
+      "address": "Patia, Bhubaneshwar",
+      "mapsUrl": "https://maps.app.goo.gl/hMzEbQEMX5zCqHz48",
+      "note": "Wedding, 23 Dec 11 PM · Hastagranthi, 24 Dec 4:10 AM"
+    },
+    {
+      "name": "S3 Lawns",
+      "address": "Ambapua Main Road, Berhampur",
+      "mapsUrl": "https://maps.app.goo.gl/8SaZx1GwJRDbqbKa7",
+      "note": "Reception, 25 Dec 7 PM"
+    }
   ],
   "bestCompliments": {
     "heading": "Best Compliments From",
-    "names": ["Friends and Family"]
+    "names": [
+      "Friends and Family"
+    ]
   },
   "rsvp": {
     "contactName": "Dr Shyamakant Jena",
@@ -59,6 +118,6 @@
   "assets": {
     "couplePhotoJpg": "assets/couple.jpg",
     "couplePhotoWebp": "assets/couple.webp",
-    "music": "assets/romantic-instrumental.m4a"
+    "music": "assets/music.m4a"
   }
 }
