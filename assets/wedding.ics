@@ -10,7 +10,7 @@ DTSTAMP:20260715T000000Z
 DTSTART;TZID=Asia/Kolkata:20261222T100000
 DTEND;TZID=Asia/Kolkata:20261222T160000
 SUMMARY:Mangan Handi & Haldi — Swapnil weds Shweta
-LOCATION:Groom's Residence
+LOCATION:Groom's Residence\, Aurobinda Nagar\, Berhampur
 DESCRIPTION:Mangan Handi & Haldi\, 22 Dec · Bride Welcome\, 24 Dec\nRSVP: 
  Dr Shyamakant Jena (Groom's Father) +919861180080
 END:VEVENT
@@ -27,7 +27,7 @@ BEGIN:VEVENT
 UID:groom-20261223T230000-wedding@shweta-swapnil-wedding
 DTSTAMP:20260715T000000Z
 DTSTART;TZID=Asia/Kolkata:20261223T230000
-DTEND;TZID=Asia/Kolkata:20261224T041000
+DTEND;TZID=Asia/Kolkata:20261224T042600
 SUMMARY:Wedding — Swapnil weds Shweta
 LOCATION:Greenland Resort\, Patia\, Bhubaneshwar
 DESCRIPTION:Wedding\, 23 Dec 11 PM · Hastagranthi\, 24 Dec 4:10 AM\nMap: h
@@ -35,10 +35,10 @@ DESCRIPTION:Wedding\, 23 Dec 11 PM · Hastagranthi\, 24 Dec 4:10 AM\nMap: h
  s Father) +919861180080
 END:VEVENT
 BEGIN:VEVENT
-UID:groom-20261224T041000-hastagranthi@shweta-swapnil-wedding
+UID:groom-20261224T042600-hastagranthi@shweta-swapnil-wedding
 DTSTAMP:20260715T000000Z
-DTSTART;TZID=Asia/Kolkata:20261224T041000
-DTEND;TZID=Asia/Kolkata:20261224T101000
+DTSTART;TZID=Asia/Kolkata:20261224T042600
+DTEND;TZID=Asia/Kolkata:20261224T102600
 SUMMARY:Hastagranthi — Swapnil weds Shweta
 LOCATION:Greenland Resort\, Patia\, Bhubaneshwar
 DESCRIPTION:Wedding\, 23 Dec 11 PM · Hastagranthi\, 24 Dec 4:10 AM\nMap: h
@@ -51,7 +51,7 @@ DTSTAMP:20260715T000000Z
 DTSTART;TZID=Asia/Kolkata:20261224T140000
 DTEND;TZID=Asia/Kolkata:20261224T200000
 SUMMARY:Bride Welcome — Swapnil weds Shweta
-LOCATION:Groom's Residence
+LOCATION:Groom's Residence\, Aurobinda Nagar\, Berhampur
 DESCRIPTION:Mangan Handi & Haldi\, 22 Dec · Bride Welcome\, 24 Dec\nRSVP: 
  Dr Shyamakant Jena (Groom's Father) +919861180080
 END:VEVENT
@@ -61,7 +61,7 @@ DTSTAMP:20260715T000000Z
 DTSTART;TZID=Asia/Kolkata:20261225T190000
 DTEND;TZID=Asia/Kolkata:20261225T203000
 SUMMARY:Reception — Swapnil weds Shweta
-LOCATION:S3 Lawns\, Patia\, Bhubaneshwar
+LOCATION:S3 Lawns\, Ambapua Main Road\, Berhampur
 DESCRIPTION:Reception\, 25 Dec 7 PM\nMap: https://maps.app.goo.gl/8SaZx1GwJ
  RDbqbKa7\nRSVP: Dr Shyamakant Jena (Groom's Father) +919861180080
 END:VEVENT

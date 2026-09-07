@@ -76,7 +76,15 @@
   function applyBindings(cfg) {
     document.querySelectorAll('[data-bind]').forEach(el => {
       const value = getPath(cfg, el.dataset.bind);
-      if (!isText(value)) return;              // keep the markup fallback
+
+      // Three distinct cases, and the difference matters:
+      //   key absent   -> config says nothing, keep the markup fallback
+      //   key is ""    -> deliberately cleared, so remove the element. Falling
+      //                   back here would ignore the edit and show the old text.
+      //   key has text -> use it
+      if (value === undefined || value === null) return;
+      if (typeof value === 'string' && value.trim() === '') { el.remove(); return; }
+      if (!isText(value)) return;
       if ('bindAmp' in el.dataset) {
         // "A & B" reads better stacked around a gold ampersand than on one line.
         const parts = value.split(/\s*&\s*/);
