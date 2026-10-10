@@ -14,11 +14,11 @@
     }
   },
   "hero": {
-    "kicker": "You are invited to celebrate",
     "tagline": "",
     "heroDate": "22–25 December 2026",
     "title": "Swapnil & Shweta",
-    "openLabel": "Tap to open"
+    "openLabel": "Tap to open",
+    "gateLabel": "You are cordially invited to the wedding of"
   },
   "invitation": {
     "label": "Wedding Invitation",
