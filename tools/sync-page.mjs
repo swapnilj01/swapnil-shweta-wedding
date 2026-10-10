@@ -101,12 +101,17 @@ const venues = (cfg.venues || []).filter(v => text(v?.name));
 const single = venues.length === 1;
 s = s.replace(/(<h2 id="venueHeading">)[^<]*(<\/h2>)/, (m, a, b) => a + esc(single ? venues[0].name : 'The venues') + b);
 const venueHtml = venues.map(v => {
-  const note = text(v.note) ? v.note : eventsAt(v.name).map(e => `${e.title}, ${e.date} ${e.time}`).join(' · ');
+  const list = eventsAt(v.name);
+  const events = text(v.note) ? `
+          <p class="venue-note">${esc(v.note)}</p>` : list.length ? `
+          <ul class="venue-events">${list.map(e => `
+            <li><span class="venue-event-name">${esc(e.title)}</span>
+                <span class="venue-event-when">${esc([e.date, e.time].filter(text).join(' · '))}</span></li>`).join('')}
+          </ul>` : '';
   return `
         <article class="glass-card venue-card">${single ? '' : `
           <h3>${esc(v.name)}</h3>`}${text(v.address) ? `
-          <p class="venue-address">${esc(v.address)}</p>` : ''}${note ? `
-          <p class="venue-note">${esc(note)}</p>` : ''}${text(v.mapsUrl) ? `
+          <p class="venue-address">${esc(v.address)}</p>` : ''}${events}${text(v.mapsUrl) ? `
           <a class="primary-btn" href="${esc(v.mapsUrl)}" target="_blank" rel="noreferrer">Open Google Maps</a>` : ''}
         </article>`;
 }).join('');

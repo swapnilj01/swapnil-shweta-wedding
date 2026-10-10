@@ -161,8 +161,20 @@
       return v === target || v.split('→').pop().trim() === target;
     });
   }
-  const venueNote = (cfg, v) => isText(v.note) ? v.note
-    : eventsAt(cfg, v.name).map(e => `${e.title}, ${e.date} ${e.time}`).join(' · ');
+  /**
+   * What happens at a venue, one event per line: the name large, the date and
+   * time beneath it. Used to be one 10px uppercase run-on line, which nobody
+   * could read on a phone, let alone in a video of the page.
+   */
+  function venueEventsHtml(cfg, v) {
+    if (isText(v.note)) return `<p class="venue-note">${escapeHTML(v.note)}</p>`;
+    const list = eventsAt(cfg, v.name);
+    if (!list.length) return '';
+    return `<ul class="venue-events">${list.map(e => `
+          <li><span class="venue-event-name">${escapeHTML(e.title)}</span>
+              <span class="venue-event-when">${escapeHTML([e.date, e.time].filter(isText).join(' · '))}</span></li>`).join('')}
+        </ul>`;
+  }
 
   function renderVenues(cfg) {
     const host = $('venueList');
@@ -179,7 +191,7 @@
       <article class="glass-card venue-card">
         ${single ? '' : `<h3>${escapeHTML(v.name)}</h3>`}
         ${isText(v.address) ? `<p class="venue-address">${escapeHTML(v.address)}</p>` : ''}
-        ${venueNote(cfg, v) ? `<p class="venue-note">${escapeHTML(venueNote(cfg, v))}</p>` : ''}
+        ${venueEventsHtml(cfg, v)}
         ${isText(v.mapsUrl)
           ? `<a class="primary-btn" href="${escapeHTML(v.mapsUrl)}" target="_blank" rel="noreferrer">Open Google Maps</a>`
           : ''}
