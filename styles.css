@@ -302,7 +302,10 @@ img { max-width: 100%; }
   padding: clamp(50px, 8.5svh, 82px) 18px clamp(16px, 3.5svh, 32px);
   z-index: 2;
   opacity: calc(.18 + (var(--gate-open) * .82));
-  transform: translate3d(0, calc((1 - var(--gate-open)) * 18px), 0) scale(calc(.96 + (var(--gate-open) * .04)));
+  /* translate only. This used to also scale from .96 to 1, but Safari rasterises
+     text inside a scaled layer at its starting size and then stretches it, so
+     the hero names looked soft or jagged on iPhone until something repainted. */
+  transform: translate3d(0, calc((1 - var(--gate-open)) * 18px), 0);
 }
 .photo-temple-frame {
   position: relative;
@@ -387,12 +390,16 @@ img { max-width: 100%; }
 .hero-text {
   width: min(92vw, 420px);
   text-align: center;
-  opacity: clamp(0, calc((var(--gate-open) - .48) * 2.2), 1);
+  /* Hands over from the closed title with a GAP, never an overlap: the title
+     is gone by --gate-open .34, the hero starts at .42. These used to overlap
+     between .48 and .74, so stopping mid-scroll showed two sets of names on
+     top of each other — the "loads improperly" text on phones. */
+  opacity: clamp(0, calc((var(--gate-open) - .42) * 2.4), 1);
   transform: translate3d(0, calc((1 - var(--gate-open)) * 26px), 0);
-  transition: opacity .2s linear;
 }
 .script-kicker, .closing-script {
   margin: 0;
+  text-wrap: balance;      /* if it must wrap, split evenly — no lone word on line two */
   font-family: var(--font-script);
   color: #ffe0a3;
   font-size: var(--fs-script-xl);
@@ -542,8 +549,9 @@ h1 em {
   inset: auto 24px 12svh;
   z-index: 9;
   text-align: center;
-  transition: opacity .2s linear, transform .2s linear;
-  opacity: clamp(0, calc(1 - (var(--gate-open) * 1.35)), 1);
+  /* No transition: opacity and position follow the scroll directly. A transition
+     here only lagged behind it and briefly showed both layers at once. */
+  opacity: clamp(0, calc(1 - (var(--gate-open) * 2.95)), 1);   /* gone by .34 — see .hero-text */
   transform: translateY(calc(var(--gate-open) * -14px));
   pointer-events: none;
 }
@@ -561,17 +569,43 @@ h1 em {
   color: #fff8e6;
   text-shadow: 0 14px 40px rgba(0,0,0,.42);
 }
-.closed-title small {
-  display: inline-block;
-  margin-top: 16px;
-  padding: 10px 16px;
-  border: 1px solid rgba(255, 232, 169, .38);
+.gate-open-btn {
+  pointer-events: auto;                 /* .closed-title itself ignores pointers */
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 18px;
+  min-height: 48px;                     /* comfortable tap target */
+  padding: 12px 22px 12px 14px;
+  border: 1px solid rgba(255, 232, 169, .55);
   border-radius: 999px;
-  font: var(--fw-ui) var(--fs-label-sm)/var(--lh-tight) var(--font-ui);
+  cursor: pointer;
+  color: #fff3d2;
+  font: var(--fw-ui) var(--fs-label)/var(--lh-tight) var(--font-ui);
   letter-spacing: var(--ls-label);
   text-transform: uppercase;
-  background: rgba(44, 5, 15, .42);
+  background: linear-gradient(135deg, rgba(121, 19, 45, .82), rgba(70, 8, 22, .82));
+  box-shadow: 0 14px 34px rgba(0, 0, 0, .32), inset 0 0 0 1px rgba(255, 255, 255, .06);
   backdrop-filter: blur(10px);
+  -webkit-tap-highlight-color: transparent;
+  animation: gateBtnGlow 2.6s ease-in-out infinite;
+}
+.gate-open-btn:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+/* A small gold wax-seal, so it reads as "open the envelope". */
+.gate-open-seal {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 50%, #7a1530 0 26%, transparent 28%),
+    radial-gradient(circle at 35% 30%, #ffeec0, #e2a547 55%, #a8661c);
+  box-shadow: 0 0 12px rgba(247, 198, 109, .55);
+}
+/* Once the gates are open the button is gone for good — not just transparent,
+   so it can't swallow a tap meant for the page behind it. */
+.gate-open-btn.is-gone { visibility: hidden; pointer-events: none; }
+@keyframes gateBtnGlow {
+  50% { box-shadow: 0 14px 34px rgba(0, 0, 0, .32), 0 0 0 6px rgba(247, 198, 109, .12); }
 }
 
 .section {
@@ -628,6 +662,35 @@ h2 {
   line-height: 1.55;
 }
 .invitation-text { margin: 18px 0 0; color: #5d2631; }
+.invitation-from-label {
+  margin: 4px 0 6px;
+  font: var(--fw-ui) var(--fs-label-sm)/var(--lh-tight) var(--font-ui);
+  letter-spacing: var(--ls-label);
+  text-transform: uppercase;
+  color: #a76516;
+}
+.invitation-from {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-body-lg);
+  font-weight: var(--fw-display);
+  line-height: 1.35;
+  color: #650c22;
+}
+.invitation-from span { color: #b98232; font-size: .8em; }
+.invitation-from:empty, .invitation-from-label:has(+ .invitation-from:empty) { display: none; }
+
+/* Hold the hero text back until its fonts are ready, so it never paints in a
+   fallback face and then jumps. script.js removes the class when the fonts
+   load, or after 2.5s so a slow connection still gets readable text. */
+html.fonts-pending .hero-text,
+html.fonts-pending .closed-title strong,
+html.fonts-pending .closed-title p { visibility: hidden; }
+.hero-text, .closed-title strong, .closed-title p { animation: heroFontIn .5s var(--ease) backwards;  /* backwards, not both: never pin opacity — the gate drives it */ }
+html.fonts-pending .hero-text,
+html.fonts-pending .closed-title strong,
+html.fonts-pending .closed-title p { animation: none; }
+@keyframes heroFontIn { from { opacity: 0; } }
 .lotus-mark {
   width: 74px;
   height: 74px;

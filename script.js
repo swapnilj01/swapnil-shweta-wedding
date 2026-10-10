@@ -148,6 +148,22 @@
       </section>`).join('');
   }
 
+  /**
+   * Events held at a venue, straight from the schedule — so a venue card can
+   * never disagree with the running order. A procession like
+   * "Odissi Hotel → Greenland Resort" counts for its destination.
+   */
+  function eventsAt(cfg, venueName) {
+    const norm = t => String(t || '').trim().toLowerCase();
+    const target = norm(venueName);
+    return (Array.isArray(cfg?.schedule) ? cfg.schedule : []).filter(e => {
+      const v = norm(e?.venueName);
+      return v === target || v.split('→').pop().trim() === target;
+    });
+  }
+  const venueNote = (cfg, v) => isText(v.note) ? v.note
+    : eventsAt(cfg, v.name).map(e => `${e.title}, ${e.date} ${e.time}`).join(' · ');
+
   function renderVenues(cfg) {
     const host = $('venueList');
     const venues = Array.isArray(cfg?.venues) ? cfg.venues.filter(v => isText(v?.name)) : [];
@@ -163,7 +179,7 @@
       <article class="glass-card venue-card">
         ${single ? '' : `<h3>${escapeHTML(v.name)}</h3>`}
         ${isText(v.address) ? `<p class="venue-address">${escapeHTML(v.address)}</p>` : ''}
-        ${isText(v.note) ? `<p class="venue-note">${escapeHTML(v.note)}</p>` : ''}
+        ${venueNote(cfg, v) ? `<p class="venue-note">${escapeHTML(venueNote(cfg, v))}</p>` : ''}
         ${isText(v.mapsUrl)
           ? `<a class="primary-btn" href="${escapeHTML(v.mapsUrl)}" target="_blank" rel="noreferrer">Open Google Maps</a>`
           : ''}
@@ -237,6 +253,9 @@
 
     if (cfg) {
       applyBindings(cfg);
+      // A signature label with no signature under it would look broken.
+      const from = document.querySelector('.invitation-from');
+      if (!from || !from.textContent.trim()) document.querySelector('.invitation-from-label')?.remove();
       renderSchedule(cfg);
       renderVenues(cfg);
       renderRsvp(cfg);
@@ -322,6 +341,32 @@
     elements.forEach(el => el.classList.add('in-view'));
   }
 
+  /**
+   * Drives --gate-open (0 = gates shut, 1 = fully open) from scroll position.
+   *
+   * Deliberately a plain scroll listener rather than a ScrollTrigger. This one
+   * value decides whether the guest sees the closed gate or the hero, so it
+   * must never lag: ScrollTrigger only recomputes on its own update cycle, and
+   * when that was missed the page sat at 0 — gates "open" but the hero never
+   * faded in. Reading the scene's rect costs one layout read per frame.
+   */
+  function initGateProgress(scene) {
+    let ticking = false;
+    const update = () => {
+      ticking = false;
+      const total = Math.max(1, scene.offsetHeight - window.innerHeight);
+      const p = clamp(-scene.getBoundingClientRect().top / total, 0, 1);
+      // easeInOutQuad — the original hand-tuned curve.
+      const eased = p < 0.5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2;
+      root.style.setProperty('--gate-open', eased.toFixed(4));
+    };
+    const request = () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } };
+    window.addEventListener('scroll', request, { passive: true });
+    window.addEventListener('resize', request, { passive: true });
+    window.visualViewport?.addEventListener('resize', request, { passive: true });
+    update();
+  }
+
   function initScrollEffects(petalField) {
     const gateScene = document.querySelector('.gate-scene');
     const layers = [...document.querySelectorAll('.parallax-layer')].filter(el => !el.closest('#gallery'));
@@ -332,25 +377,12 @@
     // Without GSAP: reveal on scroll, open the gate, skip parallax.
     // The page reads perfectly, it just doesn't dance.
     if (!hasGSAP) {
-      root.style.setProperty('--gate-open', '1');
+      if (gateScene) initGateProgress(gateScene);
       revealOnScroll(revealables);
       return;
     }
 
-    if (gateScene) {
-      ScrollTrigger.create({
-        trigger: gateScene,
-        start: 'top top',
-        end: 'bottom bottom',
-        scrub: true,
-        onUpdate: self => {
-          const p = clamp(self.progress, 0, 1);
-          // easeInOutQuad — same curve the original used.
-          const eased = p < 0.5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2;
-          root.style.setProperty('--gate-open', eased.toFixed(4));
-        },
-      });
-    }
+    if (gateScene) initGateProgress(gateScene);
 
     // matchMedia so GSAP tears all of this down (and reverts inline styles)
     // when the visitor turns on Reduce Motion.
@@ -484,10 +516,13 @@
     };
 
     fit();
-    // Cormorant loads after first paint and is wider than the fallback serif.
+    // Re-measure once the real fonts are in, and whenever the visible area
+    // changes — on iOS the address bar collapsing resizes the visual viewport
+    // without always firing a window resize.
     document.fonts?.ready.then(fit);
     window.addEventListener('resize', fit, { passive: true });
     window.addEventListener('orientationchange', fit, { passive: true });
+    window.visualViewport?.addEventListener('resize', fit, { passive: true });
   }
 
   /* ---------------------------------------------------------------
@@ -762,76 +797,131 @@
      Browsers block audible autoplay until the visitor interacts, so we retry
      on the first few interaction events and expose a toggle either way.
      --------------------------------------------------------------- */
+  /**
+   * Background music.
+   *
+   * The hard rule: no browser lets a page make sound until the guest taps,
+   * clicks or presses a key. Scrolling does not count. So the job here is to
+   * make sure the FIRST real tap always starts it, and that it stops whenever
+   * the page isn't being looked at.
+   *
+   * Previously a muted play() was started on load. On a slow connection that
+   * promise stays pending for seconds while audio buffers, and a `pending`
+   * guard then threw away the guest's tap — the one gesture that could have
+   * unlocked sound. Now every gesture calls play() synchronously, no guard.
+   */
   function initMusic() {
     const music = $('bgMusic');
     const pill = $('musicPill');
-    if (!music) return;
+    if (!music) return { playFromGesture() {} };
 
     const VOLUME = 0.34;
-    let userPaused = false;
-    let pending = false;
+    let wanted = true;          // false once the guest switches it off
+    let pausedByHide = false;   // we paused it because the page went hidden
 
-    /** Audible means: running, not muted, and turned up. */
-    const audible = () => !music.paused && !music.muted && music.volume > 0;
+    const audible = () => !music.paused && !music.muted;
 
     const sync = () => {
       if (!pill) return;
-      pill.classList.toggle('paused', !audible());
+      const on = audible();
+      pill.classList.toggle('paused', !on);
       const label = pill.querySelector('b');
-      if (label) label.textContent = audible() ? 'Music on' : 'Music';
-      pill.setAttribute('aria-pressed', String(audible()));
+      if (label) label.textContent = on ? 'Music on' : 'Music';
+      pill.setAttribute('aria-pressed', String(on));
     };
 
-    /**
-     * Try to get audible playback. If the browser refuses, fall back to a
-     * silent start: that is always permitted, keeps the track buffered and
-     * running, and means the first real tap only has to unmute rather than
-     * start from cold on a slow connection.
-     */
-    async function tryPlay() {
-      if (userPaused || pending || audible()) return audible();
-      pending = true;
-      try {
-        music.volume = VOLUME;
-        music.muted = false;
-        await music.play();
-        return true;
-      } catch {
-        try { music.muted = true; await music.play(); } catch { /* still blocked */ }
-        return false;
-      } finally {
-        pending = false;
-        sync();
-      }
+    /** Start audibly. Must run synchronously inside a gesture handler on iOS. */
+    function start() {
+      if (!wanted || document.hidden) return;
+      music.muted = false;
+      music.volume = VOLUME;              // ignored on iOS, which is fine
+      const p = music.play();
+      if (p && typeof p.then === 'function') p.then(sync, sync);
+      sync();
     }
 
-    /**
-     * Only these grant user activation, which is what actually unblocks audio.
-     * scroll and wheel do NOT — they were previously in this list with
-     * `once: true`, so the page's first scroll silently burned the retry and
-     * the music never started. They stay as extra attempts, nothing more.
-     */
-    const ACTIVATING = ['pointerdown', 'touchend', 'click', 'keydown'];
-    const EXTRA = ['scroll', 'wheel', 'touchmove'];
+    // Any tap or key press anywhere starts it. Capture phase, so taps on links
+    // and buttons count too. The pill handles its own clicks (it toggles), so
+    // those are skipped here to avoid start-then-immediately-pause.
+    const onGesture = event => {
+      if (audible() || !wanted) return;
+      if (pill && pill.contains(event.target)) return;
+      start();
+    };
+    ['pointerdown', 'touchend', 'click', 'keydown'].forEach(type =>
+      window.addEventListener(type, onGesture, { capture: true, passive: true }));
 
-    const attempt = async () => { if (await tryPlay()) detach(); };
-    function detach() {
-      ACTIVATING.forEach(t => window.removeEventListener(t, attempt, true));
-      EXTRA.forEach(t => window.removeEventListener(t, attempt));
-    }
-    // Capture phase, so a tap on a link or button still reaches us first.
-    ACTIVATING.forEach(t => window.addEventListener(t, attempt, true));
-    EXTRA.forEach(t => window.addEventListener(t, attempt, { passive: true }));
+    // Desktop browsers that already trust the site may allow it straight away.
+    start();
 
-    tryPlay();
-    window.addEventListener('load', tryPlay, { once: true });
-    document.addEventListener('visibilitychange', () => { if (!document.hidden) tryPlay(); });
+    // Stop when the guest leaves: tab switch, app minimised, screen locked.
+    const hide = () => {
+      if (!music.paused) { pausedByHide = true; music.pause(); }
+      sync();
+    };
+    const resume = () => {
+      if (!pausedByHide || !wanted) return;
+      pausedByHide = false;
+      // Allowed without a new tap because the page has already been activated.
+      // If a browser refuses anyway, the next tap starts it again.
+      music.play().then(sync, sync);
+    };
+    document.addEventListener('visibilitychange', () => (document.hidden ? hide() : resume()));
+    window.addEventListener('pagehide', hide);
+    window.addEventListener('pageshow', event => { if (event.persisted) resume(); });
 
-    pill?.addEventListener('click', async () => {
-      if (audible()) { userPaused = true; music.pause(); sync(); }
-      else { userPaused = false; music.muted = false; await tryPlay(); }
+    pill?.addEventListener('click', () => {
+      if (audible()) { wanted = false; music.pause(); sync(); }
+      else { wanted = true; start(); }
     });
+
+    music.addEventListener('play', sync);
+    music.addEventListener('pause', sync);
     sync();
+    return { playFromGesture: start };
+  }
+
+  /**
+   * "Tap to open" on the closed gates. Scrolling still opens them; this exists
+   * because a tap is the only thing that lets the music start, and an obvious
+   * button is better than hoping the guest taps somewhere first.
+   */
+  function initGateButton(music) {
+    const btn = $('gateOpenBtn');
+    const scene = document.querySelector('.gate-scene');
+    if (!btn || !scene) return;
+
+    const openAt = () => Math.max(0, scene.offsetHeight - window.innerHeight);
+
+    btn.addEventListener('click', () => {
+      music.playFromGesture();          // first, while we're still inside the tap
+      window.scrollTo({ top: openAt(), behavior: reduceMotion ? 'auto' : 'smooth' });
+    });
+
+    let ticking = false;
+    const update = () => {
+      ticking = false;
+      btn.classList.toggle('is-gone', window.scrollY > openAt() * 0.35);
+    };
+    window.addEventListener('scroll', () => {
+      if (!ticking) { ticking = true; requestAnimationFrame(update); }
+    }, { passive: true });
+    update();
+  }
+
+  /**
+   * Reveal the hero once its fonts are ready, so it never paints in a fallback
+   * face and then jumps. Gives up after 2.5s so a slow connection still gets
+   * readable text (an inline script in <head> also clears it at 3s, in case
+   * this file never loads at all).
+   */
+  function initFontGate() {
+    const done = () => root.classList.remove('fonts-pending');
+    if (!document.fonts || typeof document.fonts.load !== 'function') { done(); return Promise.resolve(); }
+    const faces = ['500 1em "Cormorant Garamond"', '1em "Italianno"', '500 1em "Jost"'];
+    const loaded = Promise.all(faces.map(f => document.fonts.load(f)));
+    const timeout = new Promise(resolve => setTimeout(resolve, 2500));
+    return Promise.race([loaded, timeout]).catch(() => {}).then(done);
   }
 
   /* ---------------------------------------------------------------
@@ -843,11 +933,14 @@
      that `content-visibility: auto` used to cause here.
      --------------------------------------------------------------- */
   (async () => {
+    // Interactive pieces first and synchronously, so the very first tap can
+    // start the music — nothing here waits on the network.
+    initGateButton(initMusic());
+    initFontGate();                              // reveals the hero when fonts land
     const cfg = await initFromConfig();
-    initHeroFit();                    // after binding: the names may have changed
+    initHeroFit();                               // re-fits itself again on fonts.ready
     initCountdown(cfg?.countdownTarget);
     initScrollEffects(initPetals());
-    initMusic();
     // Must come after the gallery has decided whether it exists, so a divider
     // is never left stranded next to a section that removed itself.
     await initGallery(cfg);

@@ -117,10 +117,10 @@ async function main() {
       if (gap > 0) minutes = Math.min(gap, MAX_MINUTES);
     }
 
-    const venue = venueByName.get(item.venueName);
+    // A procession like "Odissi Hotel → Greenland Resort" is located at its destination.
+    const venue = venueByName.get(item.venueName) || venueByName.get(String(item.venueName || '').split('→').pop().trim());
     const location = [item.venueName, venue?.address].filter(Boolean).join(', ');
     const description = [
-      venue?.note ? venue.note : '',
       item.mapsUrl ? `Map: ${item.mapsUrl}` : '',
       cfg?.rsvp?.contactName && cfg?.rsvp?.phone
         ? `RSVP: ${cfg.rsvp.contactName} (${cfg.rsvp.contactRelation || ''}) ${cfg.rsvp.phone}`.replace(/\(\)\s*/, '')

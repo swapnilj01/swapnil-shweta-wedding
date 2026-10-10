@@ -129,6 +129,19 @@ After editing the schedule in `config.json`, run:
 npm run calendar     # regenerates assets/*.ics — one VEVENT per event
 ```
 
+## After editing config.json
+
+```sh
+npm run build      # photos + calendar + index.html, all from config.json
+```
+
+`config.json` is the source of truth. `build` regenerates the calendar file, the venue event
+lists (derived from the schedule, so they can't go stale), and `index.html` — both its `<head>`
+share-card tags (from the `site` block) and the fallback text. That makes `index.html` identical
+between the two repos apart from what this writes, so shared changes are a straight copy.
+
+An empty string in config hides that element; a missing key keeps the default text.
+
 ## Before you publish — one required edit
 
 Link previews on WhatsApp, iMessage and Facebook **ignore relative image paths**. So the two

@@ -9,6 +9,7 @@ get the whole site from one origin. GitHub Pages gzips all of it automatically.
 | `swiper/swiper-bundle.min.js` | 14.0.7 | `https://cdn.jsdelivr.net/npm/swiper@14.0.7/swiper-bundle.min.js` |
 | `swiper/swiper-bundle.min.css` | 14.0.7 | `https://cdn.jsdelivr.net/npm/swiper@14.0.7/swiper-bundle.min.css` |
 | `gsap/gsap.min.js` | 3.15.0 | `https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js` |
+| `fonts/*.woff2` | Cormorant Garamond, Italianno, Jost (Latin, variable) | Google Fonts, self-hosted; SIL Open Font License 1.1 |
 | `gsap/ScrollTrigger.min.js` | 3.15.0 | `https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollTrigger.min.js` |
 
 ## Licenses

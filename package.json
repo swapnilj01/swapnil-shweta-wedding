@@ -8,7 +8,8 @@
     "photos": "node tools/build-photos.mjs",
     "serve": "python3 -m http.server 8080",
     "calendar": "node tools/build-calendar.mjs",
-    "build": "npm run photos && npm run calendar"
+    "build": "npm run photos && npm run calendar && npm run sync",
+    "sync": "node tools/sync-page.mjs"
   },
   "engines": {
     "node": ">=18"

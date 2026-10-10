@@ -1,5 +1,5 @@
 {
-  "_comment": "Groom-side configuration. This file and the photos folder named in gallery.photosDir are the ONLY data that differs between the bride and groom repos — styles.css, script.js and everything below index.html's <head> are identical. Every value here has a matching fallback hardcoded in index.html, so the page still reads correctly if this file fails to load.",
+  "_comment": "Groom-side configuration. The schedule is the source of truth: the calendar, venue event lists and page fallbacks are all generated from it by `npm run build`. This file and the photos folder are the only things that differ between the two repos.",
   "side": "groom",
   "couple": {
     "top": {
@@ -17,11 +17,15 @@
     "kicker": "You are invited to celebrate",
     "tagline": "",
     "heroDate": "22–25 December 2026",
-    "title": "Swapnil & Shweta"
+    "title": "Swapnil & Shweta",
+    "openLabel": "Tap to open"
   },
   "invitation": {
-    "heading": "Our forever begins here",
-    "text": "With love, laughter, and blessings, we invite you to witness the wedding celebration of Swapnil and Shweta as they begin their forever journey."
+    "label": "Wedding Invitation",
+    "heading": "With joy in our hearts",
+    "text": "With the blessings of the Almighty and our elders, we joyfully invite you and your family to grace the wedding of our son Swapnil with Shweta, daughter of Mrs. C Jyoti & Mr. AVN Sridhar Kumar. Your presence and blessings would mean the world to us.",
+    "fromLabel": "With warm regards",
+    "from": "Mrs. Sunanda Jena & Dr. Shyamakant Jena"
   },
   "countdownTarget": "2026-12-22T10:00:00+05:30",
   "schedule": [
@@ -78,20 +82,17 @@
     {
       "name": "Groom's Residence",
       "address": "Aurobinda Nagar, Berhampur",
-      "mapsUrl": "https://maps.app.goo.gl/BAFQqZSwxS46C1HCA",
-      "note": "Mangan Handi & Haldi, 22 Dec · Bride Welcome, 24 Dec"
+      "mapsUrl": "https://maps.app.goo.gl/BAFQqZSwxS46C1HCA"
     },
     {
       "name": "Greenland Resort",
       "address": "Patia, Bhubaneshwar",
-      "mapsUrl": "https://maps.app.goo.gl/hMzEbQEMX5zCqHz48",
-      "note": "Wedding, 23 Dec 11 PM · Hastagranthi, 24 Dec 4:10 AM"
+      "mapsUrl": "https://maps.app.goo.gl/hMzEbQEMX5zCqHz48"
     },
     {
       "name": "S3 Lawns",
       "address": "Ambapua Main Road, Berhampur",
-      "mapsUrl": "https://maps.app.goo.gl/8SaZx1GwJRDbqbKa7",
-      "note": "Reception, 25 Dec 7 PM"
+      "mapsUrl": "https://maps.app.goo.gl/8SaZx1GwJRDbqbKa7"
     }
   ],
   "bestCompliments": {
@@ -119,5 +120,12 @@
     "couplePhotoJpg": "assets/couple.jpg",
     "couplePhotoWebp": "assets/couple.webp",
     "music": "assets/music.m4a"
+  },
+  "site": {
+    "url": "https://swapnilj01.github.io/swapnil-shweta-wedding/",
+    "title": "Swapnil weds Shweta",
+    "shareTitle": "Swapnil weds Shweta · 22–25 December 2026",
+    "description": "With the blessings of our elders, we invite you to celebrate the wedding of Swapnil and Shweta.",
+    "imageAlt": "Swapnil and Shweta in traditional wedding attire before a carved temple wall"
   }
 }
